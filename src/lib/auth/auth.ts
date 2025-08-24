@@ -1,5 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { nextCookies } from "better-auth/next-js";
+import { sendEmail } from "../email";
 import { db } from "../prisma";
 // If your Prisma file is located elsewhere, you can change the path
 
@@ -12,6 +14,14 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 128,
     autoSignIn: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendEmail({
+        to: user.email,
+        subject: "Password Reset",
+        text: `Click the link to reset your password: ${url}`,
+      });
+    },
+    resetPasswordTokenExpiresIn: 3600, // 1 hour in seconds
   },
   account: {
     accountLinking: {
@@ -28,4 +38,6 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+
+  plugins: [nextCookies()],
 });

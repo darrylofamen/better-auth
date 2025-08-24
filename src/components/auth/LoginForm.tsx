@@ -1,6 +1,6 @@
 "use client";
 
-import { signUp } from "@/lib/actions";
+import { signIn } from "@/lib/actions";
 import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
@@ -9,9 +9,10 @@ import { Icons } from "../ui/icons";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import SignInSocial from "./SignInSocial";
-const SignUpForm = () => {
+
+const LoginForm = () => {
   const initialState = { errorMessage: "" };
-  const [state, formAction, pending] = useActionState(signUp, initialState);
+  const [state, formAction, pending] = useActionState(signIn, initialState);
 
   useEffect(() => {
     if (state.errorMessage.length) {
@@ -30,10 +31,8 @@ const SignUpForm = () => {
             <Link href="/" aria-label="go home">
               <Icons.logo className="h-8 w-8" />
             </Link>
-            <h1 className="mb-1 mt-4 text-xl font-semibold">
-              Create an account
-            </h1>
-            <p className="text-sm">Welcome! Create an account to get started</p>
+            <h1 className="mb-1 mt-4 text-xl font-semibold">Login</h1>
+            <p className="text-sm">Welcome back! Sign in to continue</p>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
@@ -49,22 +48,7 @@ const SignUpForm = () => {
 
           <hr className="my-4 border-dashed" />
 
-          <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="firstname" className="block text-sm">
-                  Firstname
-                </Label>
-                <Input type="text" required name="firstname" id="firstname" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastname" className="block text-sm">
-                  Lastname
-                </Label>
-                <Input type="text" required name="lastname" id="lastname" />
-              </div>
-            </div>
-
+          <div className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="block text-sm">
                 Email
@@ -72,10 +56,20 @@ const SignUpForm = () => {
               <Input type="email" required name="email" id="email" />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="pwd" className="text-sm">
-                Password
-              </Label>
+            <div className="space-y-0.5">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="pwd" className="text-sm">
+                  Password
+                </Label>
+                <Button asChild variant="link" size="sm">
+                  <Link
+                    href="/login/forgot-account"
+                    className="link intent-info variant-ghost text-sm"
+                  >
+                    Forgot your account?
+                  </Link>
+                </Button>
+              </div>
               <Input
                 type="password"
                 required
@@ -90,16 +84,16 @@ const SignUpForm = () => {
               disabled={pending}
               aria-disabled={pending}
             >
-              Continue
+              Sign In
             </Button>
           </div>
         </div>
 
         <div className="bg-muted rounded-(--radius) border p-3">
           <p className="text-accent-foreground text-center text-sm">
-            Have an account ?
+            Don&apos;t have an account?
             <Button asChild variant="link" className="px-2">
-              <Link href="/login">Sign In</Link>
+              <Link href="/sign-up">Create account</Link>
             </Button>
           </p>
         </div>
@@ -108,4 +102,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default LoginForm;

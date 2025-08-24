@@ -3,6 +3,7 @@
 import { APIError } from "better-auth/api";
 import { redirect } from "next/navigation";
 import { auth } from "./auth/auth";
+import { db } from "./prisma";
 
 interface State {
   errorMessage?: string | null;
@@ -42,4 +43,47 @@ export async function signUp(prevState: State, formData: FormData) {
   }
 
   redirect("/dashboard");
+}
+
+export async function signIn(prevState: State, formData: FormData) {
+  const rawFormData = {
+    email: formData.get("email") as string,
+    password: formData.get("pwd") as string,
+  };
+
+  const { email, password } = rawFormData;
+
+  try {
+    await auth.api.signInEmail({
+      body: {
+        email,
+        password,
+      },
+    });
+
+    console.log("signed in");
+  } catch (error) {
+    if (error instanceof APIError) {
+      switch (error.status) {
+        case "UNAUTHORIZED":
+          return { errorMessage: "User not found." };
+        case "BAD_REQUEST":
+          return { errorMessage: "Invalid email." };
+        default:
+          return { errorMessage: "Something went wrong." };
+      }
+    }
+
+    console.error("Sign in with email has not worked", error);
+  }
+
+  redirect("/dashboard");
+}
+
+export async function searchAccount(email: string) {
+  const user = await db.user.findUnique({
+    where: { email },
+  });
+
+  return user;
 }
