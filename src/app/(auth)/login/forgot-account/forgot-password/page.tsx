@@ -3,7 +3,7 @@ import ForgotPassword from "@/components/auth/ForgotPassword";
 const ForgotPasswordPage = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string }>;
 }) => {
   const params = await searchParams;
   const email = params.email || "";
